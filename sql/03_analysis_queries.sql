@@ -20,7 +20,30 @@ FROM CC_FRAUD_TRANSACTIONS
 GROUP BY FLOOR(TRANSACTION_TIME_SECONDS / 3600)
 ORDER BY time_bucket_hour;
 
--- Confusion counts after loading Python flag output
+
+-- 4) Rolling transaction-activity window with analytic functions.
+-- This is an overall dataset activity proxy because the source has no card ID;
+-- it must not be interpreted as per-card transaction velocity.
+WITH activity_window AS (
+  SELECT SOURCE_ROW_ID,
+         TRANSACTION_TIME_SECONDS,
+         TRANSACTION_TIME_SECONDS
+           - LAG(TRANSACTION_TIME_SECONDS) OVER (
+               ORDER BY TRANSACTION_TIME_SECONDS, SOURCE_ROW_ID
+             ) AS SECONDS_SINCE_PREVIOUS_TRANSACTION,
+         COUNT(*) OVER (
+           ORDER BY TRANSACTION_TIME_SECONDS
+           RANGE BETWEEN 3600 PRECEDING AND CURRENT ROW
+         ) AS TRANSACTIONS_IN_PREVIOUS_3600_SECONDS
+  FROM CC_FRAUD_TRANSACTIONS
+)
+SELECT SOURCE_ROW_ID, TRANSACTION_TIME_SECONDS,
+       SECONDS_SINCE_PREVIOUS_TRANSACTION,
+       TRANSACTIONS_IN_PREVIOUS_3600_SECONDS
+FROM activity_window
+ORDER BY TRANSACTION_TIME_SECONDS, SOURCE_ROW_ID;
+
+-- 5) Confusion counts after loading Python flag output
 SELECT
   SUM(CASE WHEN t.FRAUD_LABEL=1 AND f.RULE_FLAG=1 THEN 1 ELSE 0 END) AS true_positive,
   SUM(CASE WHEN t.FRAUD_LABEL=0 AND f.RULE_FLAG=1 THEN 1 ELSE 0 END) AS false_positive,
