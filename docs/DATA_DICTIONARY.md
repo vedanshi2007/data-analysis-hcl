@@ -6,6 +6,7 @@
 | V1-V28 | PCA-transformed anonymized numeric features | Semantic meanings are not provided in the benchmark |
 | Amount | Transaction amount | Dataset currency/context should be taken from source documentation |
 | Class | Ground-truth label | 0 = legitimate, 1 = fraud |
+| source_row_id | 1-based row number from the original CSV | Retained after exact-duplicate removal for Python-to-Oracle reconciliation |
 
 Derived fields:
 
