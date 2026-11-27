@@ -2,9 +2,12 @@
 -- 1. Put the source CSV on a server-accessible path.
 -- 2. Create an Oracle DIRECTORY and grant READ, WRITE to your schema.
 -- 3. Use SQL*Loader or an external table to stage the CSV.
--- 4. Insert mapping Time -> TRANSACTION_TIME_SECONDS, Amount -> AMOUNT,
---    Class -> FRAUD_LABEL. Let Oracle generate TRANSACTION_ID.
--- 5. Retain original file checksum and load timestamp for reproducibility.
+-- 4. Add SOURCE_ROW_ID as the 1-based CSV record position (same approach as
+--    Python's source_row_id field), then map Time -> TRANSACTION_TIME_SECONDS,
+--    Amount -> AMOUNT and Class -> FRAUD_LABEL. Oracle generates TRANSACTION_ID.
+-- 5. Load Python holdout flags into CC_FRAUD_FLAG_RESULTS using SOURCE_ROW_ID.
+--    This key is retained from the original CSV row position even after sorting.
+-- 6. Retain the original file checksum and load timestamp for reproducibility.
 -- Example shell command:
 -- sqlldr USERID=<user>/<password>@<service> CONTROL=cc_fraud.ctl LOG=cc_fraud.log BAD=cc_fraud.bad
 -- Never commit credentials or real cardholder data to Git.
