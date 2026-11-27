@@ -50,3 +50,6 @@ Oracle SQL setup is in `sql/`. Power BI dashboard guidance and DAX are in `power
 The benchmark's V-features are anonymized PCA transformations; no named merchant, cardholder or issuer features are available. `Time` is relative elapsed seconds, not a calendar timestamp, so calendar-midnight claims cannot be derived from it. Actual metrics are intentionally left unreported until the dataset is downloaded and the workflow is run.
 
 **Repository:** https://github.com/vedanshi2007/data-analysis-hcl
+
+## Detailed project report
+See [`docs/PROJECT_REPORT.md`](docs/PROJECT_REPORT.md) for the full project report covering objectives, dataset, methodology, fraud rules, evaluation metrics, Oracle SQL, Power BI design, limitations and completion checklist.
