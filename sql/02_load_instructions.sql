@@ -1,0 +1,10 @@
+-- Adapt directory objects, grants and client path to your Oracle environment.
+-- 1. Put the source CSV on a server-accessible path.
+-- 2. Create an Oracle DIRECTORY and grant READ, WRITE to your schema.
+-- 3. Use SQL*Loader or an external table to stage the CSV.
+-- 4. Insert mapping Time -> TRANSACTION_TIME_SECONDS, Amount -> AMOUNT,
+--    Class -> FRAUD_LABEL. Let Oracle generate TRANSACTION_ID.
+-- 5. Retain original file checksum and load timestamp for reproducibility.
+-- Example shell command:
+-- sqlldr USERID=<user>/<password>@<service> CONTROL=cc_fraud.ctl LOG=cc_fraud.log BAD=cc_fraud.bad
+-- Never commit credentials or real cardholder data to Git.
