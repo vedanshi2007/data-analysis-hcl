@@ -26,7 +26,7 @@ False Positive = CALCULATE([Transactions], 'holdout_flagged_transactions'[Class]
 False Negative = CALCULATE([Transactions], 'holdout_flagged_transactions'[Class] = 1, 'holdout_flagged_transactions'[rule_flag] = FALSE())
 Precision = DIVIDE([True Positive], [True Positive] + [False Positive], 0)
 Recall = DIVIDE([True Positive], [True Positive] + [False Negative], 0)
-F1 = DIVIDE(2 * [Precision] * [Recall], [Precision] + [False Positive], 0)
+F1 = DIVIDE(2 * [Precision] * [Recall], [Precision] + [Recall], 0)
 ```
 
 Check imported boolean types in Power Query. The .pbix is not part of this repository; build it in Power BI Desktop and save it as `powerbi/credit_card_fraud_dashboard.pbix`.
