@@ -4,6 +4,7 @@ Load the generated files from `reports/` after running the Python workflow:
 - `holdout_flagged_transactions.csv`
 - `rule_summary.csv`
 - `data_quality_profile.csv`
+- `evaluation_summary.csv` (optional KPI audit/export)
 
 ## Suggested pages
 
