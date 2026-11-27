@@ -14,10 +14,17 @@ Download the Kaggle ULB Credit Card Fraud Detection dataset and place `creditcar
 - `src/`: Python profiling, rule flags, evaluation and runner
 - `sql/`: Oracle DDL, loading notes and analysis queries
 - `powerbi/`: Power BI page plan and DAX measure guide
-- `docs/`: project brief, data dictionary and methodology
+- `docs/`: project brief, data dictionary, methodology and full project report
 - `tests/`: unit tests
 - `reports/`: generated outputs (not pre-filled with invented results)
 - `.github/workflows/`: automated Python unit-test workflow
+
+## Full documentation
+- [Comprehensive project report](docs/HCL_PROJECT_REPORT.md)
+- [Project brief](docs/PROJECT_BRIEF.md)
+- [Methodology and evaluation protocol](docs/METHODOLOGY.md)
+- [Data dictionary](docs/DATA_DICTIONARY.md)
+- [Power BI dashboard guide](powerbi/POWER_BI_GUIDE.md)
 
 ## Setup and execution
 ```bash
@@ -41,3 +48,5 @@ Oracle SQL setup is in `sql/`. Power BI dashboard guidance and DAX are in `power
 
 ## Caveats
 The benchmark's V-features are anonymized PCA transformations; no named merchant, cardholder or issuer features are available. `Time` is relative elapsed seconds, not a calendar timestamp, so calendar-midnight claims cannot be derived from it. Actual metrics are intentionally left unreported until the dataset is downloaded and the workflow is run.
+
+**Repository:** https://github.com/vedanshi2007/data-analysis-hcl
