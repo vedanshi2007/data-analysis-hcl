@@ -22,6 +22,7 @@ def main():
     missing = required.difference(df.columns)
     if missing: raise SystemExit(f"Dataset schema mismatch; missing: {sorted(missing)}")
     if df.empty: raise SystemExit('Dataset contains no rows.')
+    duplicate_rows_removed = int(df.duplicated().sum())
     df = df.drop_duplicates().copy()
     df['Class'] = pd.to_numeric(df['Class'], errors='raise').astype(int)
     if not set(df['Class'].unique()).issubset({0, 1}): raise SystemExit('Class must contain only 0/1.')
@@ -34,6 +35,7 @@ def main():
     metrics = evaluate_flags(scored['Class'], scored['rule_flag'])
     metrics.update({
         'dataset_rows_after_exact_deduplication': int(len(df)),
+        'exact_duplicate_rows_removed': duplicate_rows_removed,
         'calibration_rows': int(len(train)), 'holdout_rows': int(len(holdout)),
         'holdout_start_time_seconds': float(holdout['Time'].min()),
         'holdout_end_time_seconds': float(holdout['Time'].max()),
@@ -51,6 +53,7 @@ def main():
     quality.to_csv(out_dir/'data_quality_profile.csv', index=False)
     scored.to_csv(out_dir/'holdout_flagged_transactions.csv', index=False)
     pd.DataFrame([metrics]).to_json(out_dir/'evaluation_summary.json', orient='records', indent=2)
+    pd.DataFrame([{'metric': k, 'value': v} for k, v in metrics.items() if isinstance(v, (int, float))]).to_csv(out_dir/'evaluation_summary.csv', index=False)
     rule_summary = pd.DataFrame([
         {'rule':'High transaction amount','flagged_count':int(scored['rule_high_amount'].sum())},
         {'rule':'Anonymized-feature outlier','flagged_count':int(scored['rule_feature_outlier'].sum())},
