@@ -18,12 +18,14 @@ def main():
     if not path.exists():
         raise SystemExit(f"Dataset not found: {path}. See README.md for download instructions.")
     df = pd.read_csv(path)
+    # Preserve original CSV record position for Python-to-Oracle reconciliation.
+    df.insert(0, 'source_row_id', range(1, len(df) + 1))
     required = {'Time', 'Amount', 'Class', *FEATURE_COLUMNS}
     missing = required.difference(df.columns)
     if missing: raise SystemExit(f"Dataset schema mismatch; missing: {sorted(missing)}")
     if df.empty: raise SystemExit('Dataset contains no rows.')
-    duplicate_rows_removed = int(df.duplicated().sum())
-    df = df.drop_duplicates().copy()
+    duplicate_rows_removed = int(df.duplicated(subset=list(required)).sum())
+    df = df.drop_duplicates(subset=list(required)).copy()
     df['Class'] = pd.to_numeric(df['Class'], errors='raise').astype(int)
     if not set(df['Class'].unique()).issubset({0, 1}): raise SystemExit('Class must contain only 0/1.')
     df = df.sort_values('Time', kind='stable').reset_index(drop=True)
@@ -44,11 +46,11 @@ def main():
         'note': 'Time-ordered holdout; simple rule baseline; time density is a dataset-level proxy, not card-level velocity.'
     })
     quality = pd.DataFrame({
-        'column': df.columns,
-        'dtype': [str(df[c].dtype) for c in df.columns],
-        'missing_count': [int(df[c].isna().sum()) for c in df.columns],
-        'missing_pct': [float(df[c].isna().mean()*100) for c in df.columns],
-        'distinct_count': [int(df[c].nunique(dropna=True)) for c in df.columns],
+        'column': [c for c in df.columns if c != 'source_row_id'],
+        'dtype': [str(df[c].dtype) for c in df.columns if c != 'source_row_id'],
+        'missing_count': [int(df[c].isna().sum()) for c in df.columns if c != 'source_row_id'],
+        'missing_pct': [float(df[c].isna().mean()*100) for c in df.columns if c != 'source_row_id'],
+        'distinct_count': [int(df[c].nunique(dropna=True)) for c in df.columns if c != 'source_row_id'],
     })
     quality.to_csv(out_dir/'data_quality_profile.csv', index=False)
     scored.to_csv(out_dir/'holdout_flagged_transactions.csv', index=False)
