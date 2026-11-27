@@ -1,0 +1,1 @@
+Generated output location. Run `python -m src.run_analysis --input data/creditcard.csv --output reports` to populate this directory. No performance results are pre-populated; they must be calculated from the downloaded dataset.
