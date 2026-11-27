@@ -17,6 +17,7 @@ Download the Kaggle ULB Credit Card Fraud Detection dataset and place `creditcar
 - `docs/`: project brief, data dictionary and methodology
 - `tests/`: unit tests
 - `reports/`: generated outputs (not pre-filled with invented results)
+- `.github/workflows/`: automated Python unit-test workflow
 
 ## Setup and execution
 ```bash
